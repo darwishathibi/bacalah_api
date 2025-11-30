@@ -32,8 +32,7 @@ public class DocumentsController : ControllerBase
     {
         try
         {
-            var userId = GetUserId();
-            var res = await _documentService.GetDocumentsAsync(userId, pageNum, pageSize);
+            var res = await _documentService.GetDocumentsAsync( pageNum, pageSize);
 
             return Ok(new ApiResponseDto<PaginatedResult<DocumentListDto>>
             {
@@ -59,8 +58,7 @@ public class DocumentsController : ControllerBase
     {
         try
         {
-            var userId = GetUserId();
-            var doc = await _documentService.GetByIdAsync(id, userId);
+            var doc = await _documentService.GetByIdAsync(id);
 
             if (doc == null)
             {
@@ -96,8 +94,7 @@ public class DocumentsController : ControllerBase
     {
         try
         {
-            var userId = GetUserId();
-            var res = await _documentService.GetByCategoryAsync(categoryId, userId, pageNum, pageSize);
+            var res = await _documentService.GetByCategoryAsync(categoryId, pageNum, pageSize);
 
             return Ok(new ApiResponseDto<PaginatedResult<DocumentListDto>>
             {
@@ -170,9 +167,8 @@ public class DocumentsController : ControllerBase
                     Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList()
                 });
             }
-
-            var userId = GetUserId();
-            var doc = await _documentService.UpdateAsync(id, dto, userId);
+            
+            var doc = await _documentService.UpdateAsync(id, dto);
 
             return Ok(new ApiResponseDto<DocumentDto>
             {
@@ -207,8 +203,7 @@ public class DocumentsController : ControllerBase
     {
         try
         {
-            var userId = GetUserId();
-            var deleted = await _documentService.DeleteAsync(id, userId);
+            var deleted = await _documentService.DeleteAsync(id);
 
             if (!deleted)
             {
@@ -243,8 +238,7 @@ public class DocumentsController : ControllerBase
     {
         try
         {
-            var userId = GetUserId();
-            var doc = await _documentService.GetRecentAsync(userId, count);
+            var doc = await _documentService.GetRecentAsync(count);
 
             return Ok(new ApiResponseDto<List<DocumentListDto>>
             {

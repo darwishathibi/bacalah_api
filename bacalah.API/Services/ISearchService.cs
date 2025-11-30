@@ -4,5 +4,5 @@ namespace bacalah.API.Services;
 
 public interface ISearchService
 {
-    Task<SearchResultDto> SearchAsync(SearchRequestDto search, string userId);
+    Task<SearchResultDto> SearchAsync(SearchRequestDto search);
 }

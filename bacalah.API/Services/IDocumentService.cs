@@ -4,13 +4,13 @@ namespace bacalah.API.Services;
 
 public interface IDocumentService
 {
-    Task<PaginatedResult<DocumentListDto>> GetDocumentsAsync(string userId, int pageNumber, int pageSize = 10);
-    Task<DocumentDto?> GetByIdAsync(int id, string userId);
-    Task<PaginatedResult<DocumentListDto>> GetByCategoryAsync(int? categoryId, string userId, int pageNumber = 1, int pageSize = 10);
+    Task<PaginatedResult<DocumentListDto>> GetDocumentsAsync(int pageNumber, int pageSize = 10);
+    Task<DocumentDto?> GetByIdAsync(int id);
+    Task<PaginatedResult<DocumentListDto>> GetByCategoryAsync(int? categoryId, int pageNumber = 1, int pageSize = 10);
     Task<DocumentDto> CreateAsync(CreateDocumentDto createDocumentDto, string userId);
-    Task<DocumentDto> UpdateAsync(int id, UpdateDocumentDto updateDocumentDto, string userId);
-    Task<bool> DeleteAsync(int id, string userId);
-    Task<List<DocumentListDto>> GetRecentAsync(string userId, int count = 5);
+    Task<DocumentDto> UpdateAsync(int id, UpdateDocumentDto updateDocumentDto);
+    Task<bool> DeleteAsync(int id);
+    Task<List<DocumentListDto>> GetRecentAsync( int count = 5);
 }
 
 public class PaginatedResult<T>

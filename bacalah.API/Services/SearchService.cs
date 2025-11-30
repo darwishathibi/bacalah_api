@@ -14,10 +14,9 @@ public class SearchService : ISearchService
         _dbContext = dbContext;
     }
 
-    public async Task<SearchResultDto> SearchAsync(SearchRequestDto search, string userId)
+    public async Task<SearchResultDto> SearchAsync(SearchRequestDto search)
     {
         var query = _dbContext.Documents
-            .Where(d => d.UserId == userId)
             .Include(d => d.Category)
             .Include(d => d.DocumentTags)
             .ThenInclude(dt => dt.Tag)

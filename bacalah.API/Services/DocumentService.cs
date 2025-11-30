@@ -15,10 +15,9 @@ public class DocumentService : IDocumentService
         _dbContext = dbContext;
     }
 
-    public async Task<PaginatedResult<DocumentListDto>> GetDocumentsAsync(string userId, int pageNumber = 1, int pageSize = 10)
+    public async Task<PaginatedResult<DocumentListDto>> GetDocumentsAsync( int pageNumber = 1, int pageSize = 10)
     {
         var query = _dbContext.Documents
-            .Where(d => d.UserId == userId)
             .Include(d => d.Category)
             .Include(d => d.DocumentTags)
             .ThenInclude(dt => dt.Tag)
@@ -39,14 +38,14 @@ public class DocumentService : IDocumentService
         };
     }
 
-    public async Task<DocumentDto?> GetByIdAsync(int id, string userId)
+    public async Task<DocumentDto?> GetByIdAsync(int id)
     {
         var doc = await _dbContext.Documents
             .Include(d => d.Category)
             .Include(d => d.DocumentTags)
             .ThenInclude(dt => dt.Tag)
             .Include(d => d.User)
-            .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId);
+            .FirstOrDefaultAsync(d => d.Id == id);
         
         if (doc == null)
             return null;
@@ -66,11 +65,10 @@ public class DocumentService : IDocumentService
         };
     }
 
-    public async Task<PaginatedResult<DocumentListDto>> GetByCategoryAsync(int? categoryId, string userId,
-        int pageNumber = 1, int pageSize = 10)
+    public async Task<PaginatedResult<DocumentListDto>> GetByCategoryAsync(int? categoryId, int pageNumber = 1, int pageSize = 10)
     {
         var query = _dbContext.Documents
-            .Where(d => d.UserId == userId && d.CategoryId == categoryId)
+            .Where(d => d.CategoryId == categoryId)
             .Include(d => d.Category)
             .Include(d => d.DocumentTags)
             .ThenInclude(d => d.Tag)
@@ -119,14 +117,14 @@ public class DocumentService : IDocumentService
         await _dbContext.SaveChangesAsync();
         
         await ProcessTagsAsync(doc, createDocumentDto.Tags);
-        return await GetByIdAsync(doc.Id, userId) ?? throw new Exception("Failed to create document");
+        return await GetByIdAsync(doc.Id) ?? throw new Exception("Failed to create document");
     }
 
-    public async Task<DocumentDto> UpdateAsync(int id, UpdateDocumentDto updateDocumentDto, string userId)
+    public async Task<DocumentDto> UpdateAsync(int id, UpdateDocumentDto updateDocumentDto)
     {
         var doc = await _dbContext.Documents
             .Include(d => d.DocumentTags)
-            .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId);
+            .FirstOrDefaultAsync(d => d.Id == id);
 
         if (doc == null)
         {
@@ -153,13 +151,13 @@ public class DocumentService : IDocumentService
 
         await _dbContext.SaveChangesAsync();
 
-        return await GetByIdAsync(doc.Id, userId) ?? throw new Exception("Failed to update document");
+        return await GetByIdAsync(doc.Id) ?? throw new Exception("Failed to update document");
     }
     
-    public async Task<bool> DeleteAsync(int id, string userId)
+    public async Task<bool> DeleteAsync(int id)
     {
        var doc = await _dbContext.Documents
-           .FirstOrDefaultAsync(d => d.Id == id && d.UserId == userId);
+           .FirstOrDefaultAsync(d => d.Id == id);
        
          if (doc == null)
              return false;
@@ -170,10 +168,9 @@ public class DocumentService : IDocumentService
          return true;
     }
 
-    public async Task<List<DocumentListDto>> GetRecentAsync(string userId, int count = 5)
+    public async Task<List<DocumentListDto>> GetRecentAsync( int count = 5)
     {
         var documents = await _dbContext.Documents
-            .Where(d => d.UserId == userId)
             .Include(d => d.Category)
             .Include(d => d.DocumentTags)
             .ThenInclude(dt => dt.Tag)

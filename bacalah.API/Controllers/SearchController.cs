@@ -50,7 +50,7 @@ public class SearchController : ControllerBase
                 SortDescending = sortDescending
             };
             
-            var res = await _searchService.SearchAsync(search, userId);
+            var res = await _searchService.SearchAsync(search);
 
             return Ok(new ApiResponseDto<SearchResultDto>
             {
